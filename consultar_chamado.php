@@ -1,5 +1,19 @@
 <? require_once "validador_acesso.php" ?>
 
+<?php
+
+  $chamados = array();
+  $arquivo = fopen('arquivo.hd', 'r');
+
+  while(!feof($arquivo)){
+    $registro = fgets($arquivo);
+    $chamados[] = $registro;
+  }
+
+  fclose($arquivo);
+
+?>
+
 <html>
   <head>
     <meta charset="utf-8" />
@@ -23,6 +37,11 @@
         <img src="logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
         App Help Desk
       </a>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="logoff.php">SAIR</a>
+        </li>
+      </ul>
     </nav>
 
     <div class="container">    
@@ -36,23 +55,35 @@
             
             <div class="card-body">
               
+              <? foreach($chamados as $chamado) { ?>
+              
+              <?php
+
+                $chamados_dados = explode('#', $chamado);
+
+                if($_SESSION['perfil_id'] == 2){
+
+                  if($_SESSION['id'] != $chamados_dados[0]){
+                    continue;
+                  }
+                }
+
+                if(count($chamados_dados) < 3){
+                  continue;
+                }
+
+              ?>
+
               <div class="card mb-3 bg-light">
                 <div class="card-body">
-                  <h5 class="card-title">Título do chamado...</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">Categoria</h6>
-                  <p class="card-text">Descrição do chamado...</p>
+                  <h5 class="card-title"><?=$chamados_dados[1]?></h5>
+                  <h6 class="card-subtitle mb-2 text-muted"><?=$chamados_dados[2]?></h6>
+                  <p class="card-text"><?=$chamados_dados[3]?></p>
 
                 </div>
               </div>
 
-              <div class="card mb-3 bg-light">
-                <div class="card-body">
-                  <h5 class="card-title">Título do chamado...</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">Categoria</h6>
-                  <p class="card-text">Descrição do chamado...</p>
-
-                </div>
-              </div>
+              <? } ?>
 
               <div class="row mt-5">
                 <div class="col-6">
